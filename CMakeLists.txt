@@ -406,8 +406,12 @@ set(${PROJECT_NAME}_SOURCES
     src/type_info.cpp
     src/version.cpp)
 
-add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}
+# todo xiao
+# add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}
+#                                    ${${PROJECT_NAME}_HEADERS})
+add_library(${PROJECT_NAME} STATIC ${${PROJECT_NAME}_SOURCES}
                                    ${${PROJECT_NAME}_HEADERS})
+
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 set_standard_output_directory(${PROJECT_NAME})
 target_include_directories(
