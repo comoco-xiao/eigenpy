@@ -59,6 +59,10 @@ endfunction()
 set(CXX_DISABLE_WERROR True)
 set(CMAKE_VERBOSE_MAKEFILE True)
 
+# todo xiao
+set(CMAKE_C_COMPILER_LAUNCHER ccache CACHE INTERNAL "C cache")
+set(CMAKE_CXX_COMPILER_LAUNCHER ccache CACHE INTERNAL "C++ cache")
+
 # ----------------------------------------------------
 # --- OPTIONS  ---------------------------------------
 # Need to be set before including base.cmake
@@ -93,6 +97,29 @@ include("${JRL_CMAKE_MODULES}/base.cmake")
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
 project(${PROJECT_NAME} ${PROJECT_ARGS})
 
+# todo xiao
+# *********************************************************************************
+set(PROJECT_BUILD_DIR "/home/ubuntu/workspace/chaquopy/server/pypi/packages/eigenpy/build/3.10.3/cp39-cp39-android_28_arm64_v8a/")
+set(PYTHON_EXECUTABLE "${PROJECT_BUILD_DIR}/env/bin/python3.9")
+# eigen3
+set(Eigen3_DIR "/usr/share/eigen3/cmake")
+# boost
+set(BOOST_ROOT "/home/ubuntu/workspace/pkg/boost_1_85_0/arm64-v8a")
+set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib")
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_DIR "${BOOST_LIBRARYDIR}/cmake/Boost-1.85.0")
+set(boost_headers_DIR "${BOOST_LIBRARYDIR}/cmake/boost_headers-1.85.0")
+set(boost_filesystem_DIR "${BOOST_LIBRARYDIR}/cmake/boost_filesystem-1.85.0")
+set(boost_atomic_DIR "${BOOST_LIBRARYDIR}/cmake/boost_atomic-1.85.0")
+set(boost_system_DIR "${BOOST_LIBRARYDIR}/cmake/boost_system-1.85.0")
+set(boost_serialization_DIR "${BOOST_LIBRARYDIR}/cmake/boost_serialization-1.85.0")
+set(boost_python_DIR "${BOOST_LIBRARYDIR}/cmake/boost_python-1.85.0")
+set(boost_container_DIR "${BOOST_LIBRARYDIR}/cmake/boost_container-1.85.0")
+set(boost_graph_DIR "${BOOST_LIBRARYDIR}/cmake/boost_graph-1.85.0")
+set(Boost_COMPILER "-clang")
+include_directories(${Boost_INCLUDE_DIRS})
+# *********************************************************************************
+
 include("${JRL_CMAKE_MODULES}/boost.cmake")
 include("${JRL_CMAKE_MODULES}/python.cmake")
 include("${JRL_CMAKE_MODULES}/ide.cmake")
@@ -122,11 +149,14 @@ else(WIN32)
   set(LINK create_symlink)
 endif(WIN32)
 
-if(CMAKE_CROSSCOMPILING)
-  set(PYTHON_COMPONENTS Interpreter NumPy)
-else()
-  set(PYTHON_COMPONENTS Interpreter Development.Module NumPy)
-endif()
+# todo xiao
+# if(CMAKE_CROSSCOMPILING)
+#   set(PYTHON_COMPONENTS Interpreter NumPy)
+# else()
+#   set(PYTHON_COMPONENTS Interpreter Development.Module NumPy)
+# endif()
+set(PYTHON_COMPONENTS Development.Module)
+
 set(PYTHON_EXPORT_DEPENDENCY ON)
 findpython(REQUIRED)
 
@@ -150,7 +180,10 @@ add_project_dependency(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
 
 set_boost_default_options()
 export_boost_default_options()
-find_package(Boost REQUIRED)
+
+# todo xiao
+# find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS python)
 search_for_boost_python(REQUIRED)
 
 if(BUILD_WITH_CHOLMOD_SUPPORT)
